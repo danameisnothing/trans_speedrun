@@ -62,7 +62,7 @@ for vid in "$1/"*.mkv; do
 
     if [[ $DEBUG == 0 ]]; then
         ffmpeg -hide_banner -y -i "$vid" -map 0:a -c:a libopus -b:a 48k "$tmp_aud"
-        python "$SCRIPT_DIR/trans.py" -q "$2" -g "$3" -o "$tmp_srt" --audio-description "$audio_desc" "$tmp_aud"
+        python "$SCRIPT_DIR/trans.py" -q "$2" -g "$3" -o "$tmp_srt" --groq-model "whisper-large-v3" --audio-description "$audio_desc" "$tmp_aud"
     else
         echo "skipped processing $vid due to debug mode"
     fi

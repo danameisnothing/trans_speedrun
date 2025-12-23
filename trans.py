@@ -138,7 +138,7 @@ def main():
     parser.add_argument("input", type=str, help="The input audio file to be captioned")
     parser.add_argument("-o", "--output", type=str, default="out.srt", help="The output caption file (SRT)")
     parser.add_argument("--gemini-model", type=str, default="gemma-3-27b-it", help="The Gemini model to be used for caption-correction")
-    parser.add_argument("--gemini-temp", type=float, default=0.1, help="The temperature to use for the Gemini model")
+    parser.add_argument("--gemini-temp", type=float, default=0.0, help="The temperature to use for the Gemini model")
     parser.add_argument("--groq-model", type=str, default="whisper-large-v3-turbo", help="The Groq Whisper model to be used for audio transcription")
     parser.add_argument("--silero-threshold", type=float, default=0.4, help="Threshold to use for SileroVAD timestamp processing")
     parser.add_argument("--segment-preferred-length", type=int, default=96, help="The preferred segment character length. If the transcription result returns longer than this, the program will try to split it off into multiple segments")
@@ -213,6 +213,12 @@ def main():
     # TODO: add handling in case the length returned by Gemma isn't the same
 
     final = corrected_segments.copy()
+    if len(final) != len(fixed_obj):
+        # HACK: really should do more! it's 2 AM here.
+        print(f"[WARNINGWARNINGWARNING] final's length is {len(final)}, while fixed_obj's length is {len(fixed_obj)}, resorting to padding!")
+        final += [""] * (max(len(final), len(fixed_obj)) - len(final))
+        fixed_obj += [""] * (max(len(final), len(fixed_obj)) - len(fixed_obj))
+
     for i in range(len(final)):
         final[i]["words"] = fixed_obj[i]
 
