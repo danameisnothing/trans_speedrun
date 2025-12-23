@@ -24,9 +24,20 @@ Here are the rules that you need to follow for fixing the given transcriptions :
 You will respond in the following format :
 ```json
 {
-    "response": ["<corrected text 1>", "<corrected text 2>", "<corrected text 3>", "<etc>"]
+    "response": [
+        "<corrected text 1>",
+        "<corrected text 2>",
+        "<corrected text 3>",
+        "<corrected text 4>",
+        "<corrected text 5>",
+        "<corrected text 6>",
+        "<etc>"
+    ],
+    "original_array_length": <number here>,
+    "validated_new_array_response_length": <number here>
 }
 ```
+The array length MUST be the same from the beginning, not larger, not smaller!
 """
 GEMINI_EXTENDED_PROMPT = """And here, you will also be given further context to refine your corrections, in the form of the description of the audio. The description could possibly contain valuable information, such as clear subject names that would'nt have been clear, just from the transcriptions alone. Here is the description of the audio :
 ```
@@ -127,7 +138,7 @@ def main():
     parser.add_argument("input", type=str, help="The input audio file to be captioned")
     parser.add_argument("-o", "--output", type=str, default="out.srt", help="The output caption file (SRT)")
     parser.add_argument("--gemini-model", type=str, default="gemma-3-27b-it", help="The Gemini model to be used for caption-correction")
-    parser.add_argument("--gemini-temp", type=float, default=1.0, help="The temperature to use for the Gemini model")
+    parser.add_argument("--gemini-temp", type=float, default=0.1, help="The temperature to use for the Gemini model")
     parser.add_argument("--groq-model", type=str, default="whisper-large-v3-turbo", help="The Groq Whisper model to be used for audio transcription")
     parser.add_argument("--silero-threshold", type=float, default=0.4, help="Threshold to use for SileroVAD timestamp processing")
     parser.add_argument("--segment-preferred-length", type=int, default=96, help="The preferred segment character length. If the transcription result returns longer than this, the program will try to split it off into multiple segments")
